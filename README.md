@@ -1,55 +1,70 @@
-# Kaggle llama.cpp CUDA backend
+# Kaggle llama.cpp API Config Backend
 
-Repo kecil untuk menjalankan `llama.cpp` CUDA + GGUF + ngrok di Kaggle tanpa notebook panjang.
+Config-driven backend untuk menjalankan `llama.cpp` CUDA di Kaggle.
 
-## Perubahan penting
+Fokus:
+- OpenAI-compatible API.
+- `/v1/models` rapi lewat `--alias`.
+- API key lewat `--api-key`.
+- Preset context: `safe`, `balanced`, `long_context_20k`, `vision_safe`.
+- Text mode: `model.gguf`.
+- Vision mode: `model.gguf + mmproj.gguf`.
+- Downloader `aria2c + tqdm`.
+- Ngrok tunnel dari Kaggle Secret.
 
-Downloader sekarang memakai **aria2c + tqdm**:
+## Feasibility
 
-- `aria2c` tetap melakukan parallel segmented download.
-- Python membaca progress dari JSON-RPC aria2.
-- `tqdm` menampilkan progress bar realtime yang rapi di Kaggle.
-- Jika aria2 gagal, fallback otomatis ke `requests + tqdm`.
+Implementasi ini mengikuti fitur resmi `llama-server`:
+- OpenAI-compatible `/v1/chat/completions`.
+- Multimodal melalui `image_url` content part bila model mendukung.
+- `/v1/models` dan `--alias`.
+- `--api-key`.
+- `--mmproj` untuk multimodal projector.
 
-Aria2 mendukung parallel segmented HTTP download melalui opsi seperti `--split` dan `--max-connection-per-server`, serta bisa dikontrol lewat JSON-RPC.
+Vision mode membutuhkan pasangan model vision GGUF dan mmproj GGUF yang cocok. Model teks biasa tidak otomatis bisa melihat gambar hanya karena diberi mmproj lain.
 
 ## Notebook
 
-`notebooks/kaggle_runner.ipynb` hanya punya 4 cell utama:
+`notebooks/kaggle_runner.ipynb` tetap 4 cell utama:
 
-1. Clone repo, install dependency, install/download `aria2c`, download prebuilt `llama.cpp-cuda`.
-2. Download model GGUF dari URL.
-3. Konfigurasi runtime, start server background, health check, test response.
-4. Start ngrok tunnel dari Kaggle Secret.
+1. Clone repo + install dependency + download prebuilt `llama.cpp-cuda`.
+2. Load config + download assets.
+3. Start server + health check + `/v1/models` check + chat test.
+4. Start ngrok tunnel.
 
 ## Push ke GitHub
 
 ```bash
-cd kaggle-llamacpp-backend-aria-tqdm
+cd kaggle-llamacpp-api-config
 git init
 git add .
-git commit -m "initial kaggle llama.cpp backend aria tqdm"
+git commit -m "config driven kaggle llama.cpp backend"
 git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/kaggle-llamacpp-backend.git
+git remote add origin https://github.com/YOUR_USERNAME/kaggle-llamacpp-api-config.git
 git push -u origin main
 ```
 
-Lalu edit `REPO_URL` di notebook:
+## Kaggle Secrets
 
-```python
-REPO_URL = "https://github.com/YOUR_USERNAME/kaggle-llamacpp-backend.git"
-```
+Untuk ngrok:
+- buat secret `ngrok` atau `NGROK_AUTHTOKEN`;
+- pastikan checkbox secret dicentang di notebook;
+- gunakan label yang sama di `start_ngrok_tunnel(secret_name=...)`.
 
-## Kaggle Secret untuk ngrok
+## Text config
 
-Buat secret bernama:
+Lihat:
 
 ```text
-NGROK_AUTHTOKEN
+configs/config.text.example.yaml
 ```
 
-Isinya authtoken dari dashboard ngrok, bukan API key.
+## Vision config
 
-## Model default
+Lihat:
 
-Default notebook memakai Gemma 4 26B Q4 GGUF. Untuk tes cepat, ganti ke model 7B/8B Q4.
+```text
+configs/config.vision.example.yaml
+```
+
+Ganti `model_url` dan `mmproj_url` dengan pasangan model vision dan projector yang benar.

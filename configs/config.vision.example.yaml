@@ -1,0 +1,33 @@
+api:
+  alias: vision-local
+  api_key: local
+  api_key_env: LLAMA_API_KEY
+  port: 8080
+  metrics: true
+
+model:
+  mode: vision
+  # Ganti dua URL ini dengan pasangan model vision GGUF dan mmproj GGUF yang cocok.
+  model_url: https://huggingface.co/REPLACE/REPLACE/resolve/main/model-Q4_K_M.gguf
+  mmproj_url: https://huggingface.co/REPLACE/REPLACE/resolve/main/mmproj-model.gguf
+  mmproj_offload: true
+
+runtime:
+  profile: vision_safe
+  ctx_size: 4096
+  batch_size: 256
+  ubatch_size: 64
+  gpu_layers: 999
+  split_mode: layer
+  tensor_split: "1,1"
+  threads: 4
+  parallel: 1
+  warmup: true
+
+reasoning:
+  mode: off
+  clean_gemma4_tags: true
+
+download:
+  backend: aria2
+  hf_token_env: HF_TOKEN
