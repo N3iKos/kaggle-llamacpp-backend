@@ -3,11 +3,10 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "kaggle-llamacpp-api-config"
+name = "kaggle-llamacpp-backend"
 version = "0.3.0"
-description = "Config-driven Kaggle backend for llama.cpp CUDA GGUF/mmproj API and ngrok."
 requires-python = ">=3.10"
-dependencies = ["requests>=2.31.0", "tqdm>=4.66.0", "PyYAML>=6.0.1"]
+dependencies = ["requests>=2.31.0", "tqdm>=4.66.0"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
