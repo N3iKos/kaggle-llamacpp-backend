@@ -56,6 +56,8 @@ def kill_pidfile(pidfile: str | Path) -> None:
 
 def find_first(paths: Iterable[Path], name: str) -> Optional[Path]:
     for base in paths:
+        if not base.exists():
+            continue
         for p in base.rglob(name):
             if p.is_file():
                 return p
@@ -90,5 +92,5 @@ def get_secret_or_env(name: str) -> str:
         return token
     except Exception as exc:
         raise RuntimeError(
-            f"Secret/env {name!r} tidak ditemukan. Di Kaggle, buat Add-ons > Secrets dengan nama {name!r} dan aktifkan untuk notebook ini."
+            f"Secret/env {name!r} tidak ditemukan. Di Kaggle, buat Add-ons > Secrets dengan nama {name!r} dan aktifkan."
         ) from exc

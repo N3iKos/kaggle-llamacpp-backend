@@ -1,6 +1,7 @@
 from .core import (
     RuntimePaths,
     ServerConfig,
+    ensure_aria2c,
     ensure_llamacpp_cuda,
     download_model,
     start_llama_server,

@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "kaggle-llamacpp-backend"
-version = "0.1.0"
-description = "Small Kaggle backend helpers for llama.cpp CUDA GGUF server and ngrok tunnel."
+version = "0.2.0"
+description = "Kaggle helpers for llama.cpp CUDA GGUF server, aria2+tqdm downloads, and ngrok tunnel."
 requires-python = ">=3.10"
 dependencies = [
   "requests>=2.31.0",
